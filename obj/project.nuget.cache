@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "pHwMY7u76YGjqBBRE+ZXT4fZDJ5iFKMvDcsx8ctHK84P8Y5WB2+mMh2sP9vFRDDR3Vguk5nq0iKF76UYLVEdXA==",
+  "dgSpecHash": "EYriQQS6RPMWSBpTN5DV4SW+ZcpmZ1hUeqwHpuor6Fw9yMXO8rmhD5nsQX9tH0k4WBae/1xTO1dknnn48I67zw==",
   "success": true,
   "projectFilePath": "/home/luho/Code/webapi/GastroApi/GastroApi.csproj",
   "expectedPackageFiles": [
@@ -118,6 +118,8 @@
     "/home/luho/.nuget/packages/microsoft.win32.systemevents/7.0.0/microsoft.win32.systemevents.7.0.0.nupkg.sha512",
     "/home/luho/.nuget/packages/mono.texttemplating/2.3.1/mono.texttemplating.2.3.1.nupkg.sha512",
     "/home/luho/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
+    "/home/luho/.nuget/packages/npgsql/8.0.3/npgsql.8.0.3.nupkg.sha512",
+    "/home/luho/.nuget/packages/npgsql.entityframeworkcore.postgresql/8.0.4/npgsql.entityframeworkcore.postgresql.8.0.4.nupkg.sha512",
     "/home/luho/.nuget/packages/nuget.common/6.9.1/nuget.common.6.9.1.nupkg.sha512",
     "/home/luho/.nuget/packages/nuget.configuration/6.9.1/nuget.configuration.6.9.1.nupkg.sha512",
     "/home/luho/.nuget/packages/nuget.dependencyresolver.core/6.9.1/nuget.dependencyresolver.core.6.9.1.nupkg.sha512",

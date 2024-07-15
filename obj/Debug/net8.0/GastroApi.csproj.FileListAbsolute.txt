@@ -252,3 +252,6 @@
 /home/luho/Code/webapi/GastroApi/obj/Debug/net8.0/GastroApi.pdb
 /home/luho/Code/webapi/GastroApi/obj/Debug/net8.0/GastroApi.genruntimeconfig.cache
 /home/luho/Code/webapi/GastroApi/obj/Debug/net8.0/ref/GastroApi.dll
+/home/luho/Code/webapi/GastroApi/bin/Debug/net8.0/Npgsql.dll
+/home/luho/Code/webapi/GastroApi/bin/Debug/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
+/home/luho/Code/webapi/GastroApi/obj/Debug/net8.0/GastroApi.sourcelink.json
