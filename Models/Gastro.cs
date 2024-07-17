@@ -4,7 +4,7 @@ public class GastroItem
 {
     public long Id { get; set; }
 
-    public string DescriptionName { get; set; }
+    public string? DescriptionName { get; set; }
 
     public string? Ingredients { get; set; }
 
