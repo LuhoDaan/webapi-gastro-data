@@ -255,3 +255,5 @@
 /home/luho/Code/webapi/GastroApi/bin/Debug/net8.0/Npgsql.dll
 /home/luho/Code/webapi/GastroApi/bin/Debug/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
 /home/luho/Code/webapi/GastroApi/obj/Debug/net8.0/GastroApi.sourcelink.json
+/home/luho/Code/webapi/GastroApi/bin/Debug/net8.0/IdentityModel.dll
+/home/luho/Code/webapi/GastroApi/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
