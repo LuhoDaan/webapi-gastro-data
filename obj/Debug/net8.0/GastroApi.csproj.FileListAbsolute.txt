@@ -257,3 +257,6 @@
 /home/luho/Code/webapi/GastroApi/obj/Debug/net8.0/GastroApi.sourcelink.json
 /home/luho/Code/webapi/GastroApi/bin/Debug/net8.0/IdentityModel.dll
 /home/luho/Code/webapi/GastroApi/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/home/luho/Code/webapi/GastroApi/bin/Debug/net8.0/Dapper.dll
+/home/luho/Code/webapi/GastroApi/bin/Debug/net8.0/SqlKata.dll
+/home/luho/Code/webapi/GastroApi/bin/Debug/net8.0/SqlKata.Execution.dll
