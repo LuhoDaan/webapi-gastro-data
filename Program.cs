@@ -1,20 +1,20 @@
 using Microsoft.EntityFrameworkCore;
-using GastroApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SqlKata;
+using SqlKata.Compilers;
+using SqlKata.Execution;
+using System.Data.SqlClient;
+using Npgsql;
+using GastroApi.Controllers;
+using GastroApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-
-//add postgresdb
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<GastroContext>(options =>
-    options.UseNpgsql(connectionString));
-
 
 //add authentication with keycloak
 var keycloakConfig = builder.Configuration.GetSection("Keycloak");
@@ -50,6 +50,22 @@ builder.Services.AddAuthentication(options =>
         //ValidAudience = keycloakConfig["ClientId"],
         ValidIssuer = keycloakConfig["Authority"]
     };
+});
+
+//Add also DbContext to handle jsonb files
+// var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// builder.Services.AddDbContext<DbGastro>(options =>
+//     options.UseNpgsql(connectionString));
+
+// Add SQLKata QueryFactory
+builder.Services.AddSingleton<QueryFactory>(provider =>
+{
+    var config = builder.Configuration;
+    var connectionString = config.GetConnectionString("DefaultConnection");
+    var connection = new NpgsqlConnection(connectionString); // Or SqlConnection for SQL Server
+    var compiler = new PostgresCompiler(); // Or new SqlServerCompiler() for SQL Server
+
+    return new QueryFactory(connection, compiler);
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

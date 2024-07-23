@@ -1,11 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 //using System.Threading.Tasks;
-using GastroApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 //using Microsoft.EntityFrameworkCore;
+using SqlKata.Execution;
+using SqlKata;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.AspNetCore.Http.HttpResults;
+using System.Text.Json;
+using GastroApi.Models;
+using Newtonsoft.Json;
 
 namespace GastroApi.Controllers
 {
@@ -13,115 +19,144 @@ namespace GastroApi.Controllers
     [ApiController]
     public class GastroItemsController : ControllerBase
     {
-        private readonly GastroContext _context;
+        private readonly QueryFactory _db;
 
-        public GastroItemsController(GastroContext context)
+        //private readonly DbGastro _context;
+
+        public GastroItemsController(QueryFactory db)//, DbGastro context)
         {
-            _context = context;
+            _db = db;
+           // _context = context;
         }
 
         // GET: api/GastroItems
         [HttpGet]
 
-        public async Task<ActionResult<IEnumerable<GastroItem>>> GetGastroItems([FromQuery] long? id,[FromQuery] string? name,[FromQuery] string? description)
+        public async Task<ActionResult<IEnumerable<GastroItem>>> GetGastroItems([FromQuery] long? id, [FromQuery] string? name, [FromQuery] string? description)
         {
-            IQueryable<GastroItem> query = _context.GastroItems;
+            var query = new Query("gastroitems");
 
-            if(id.HasValue){
+            if (id.HasValue)
+            {
 
-                query = query.Where(item => item.Id.Equals(id));
+                query = query.Where("Id", id);
 
             }
-            else if (!name.IsNullOrEmpty()){
-                query = query.Where(item => item.DescriptionName.Contains(name));
+            else if (!name.IsNullOrEmpty())
+            {
+                query = query.WhereLike("DescriptionName", name);
             }
-            else if (!description.IsNullOrEmpty()){
-                query = query.Where(item => item.Recipe.Contains("description"));
+            else if (!description.IsNullOrEmpty())
+            {
+                query = query.WhereLike("Recipe", description);
             }
 
-           var items = await query.ToListAsync();
-            if (items == null || !items.Any() ){
+            var items = await _db.GetAsync<GastroItem>(query);
+            if (items == null || !items.Any())
+            {
                 return NotFound();
 
             }
-            else {
+            else
+            {
                 return Ok(items);
             }
         }
 
-        // POST: api/GastroItems
+        // POST: api/gastroitems
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<GastroItem>> PostGastroItem(GastroItem GastroItem)
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<GastroItem>> PostGastroItem(long id,  [FromBody] AdditionalItem? itemino)
         {
-            _context.GastroItems.Add(GastroItem);
-            await _context.SaveChangesAsync();
+            //var jsondata = additionalItem != null ? JsonConvert.SerializeObject(additionalItem): null;
 
-            return CreatedAtAction(nameof(GetGastroItems), new { id = GastroItem.Id }, GastroItem);
+            GastroItem item = new GastroItem
+            {
+                Id = id,
+                Data = new JsonRaw(itemino)
+
+            };
+
+            // _context.gastroitems.Add(item);
+            // await _context.SaveChangesAsync();
+
+            var result = await _db.Query("gastroitems").InsertAsync(item);
+
+            return CreatedAtAction(nameof(GetGastroItems), new { id = item.Id }, item);
         }
 
         // Other CRUD actions can be added here (PutGastroItem, DeleteGastroItem, etc.)
-    
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutGastroItem(long id, GastroItem GastroItem)
-    {
-        if (id != GastroItem.Id)
-        {
-            return BadRequest();
-        }
 
-        _context.Entry(GastroItem).State = EntityState.Modified;
+        [HttpPut("{id}")]
+        public async Task<ActionResult<GastroItem>> PutGastroItem(long id, [FromBody] AdditionalItem? itemino)
+        {
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!GastroItemExists(id))
+
+            Dictionary<string, object> MapItem = NotNullItems(itemino);
+
+            try
             {
-                return NotFound();
+                var affectedRows = await _db.Query("gastroitems").Where("Id", id).UpdateAsync(MapItem);
+
+                if (affectedRows == 0)
+                {
+                    return NotFound();
+                }
+
+
             }
-            else
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+
+            return NoContent();
+
+        }
+
+        private Dictionary<string, object> NotNullItems(AdditionalItem? itemino)
+        {
+
+            Dictionary<string, object> map = new Dictionary<string, object>();
+
+            if (!string.IsNullOrEmpty(itemino.DescriptionName)) map["DescriptionName"] = itemino.DescriptionName;
+            if (!string.IsNullOrEmpty(itemino.Ingredients)) map["Ingredients"] = itemino.Ingredients;
+            if (!string.IsNullOrEmpty(itemino.Recipe)) map["Recipe"] = itemino.Recipe;
+            if (itemino.TimeToPrepare.HasValue) map["TimeToPrepare"] = itemino.TimeToPrepare;
+
+
+            return map;
+
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGastroItem(long id)
+        {
+            var query = new Query("gastroitems").Where("Id", id);
+
+            try
+            {
+                var catchItem = await _db.FirstOrDefaultAsync<GastroItem>(query);
+
+                if (catchItem is null)
+                {
+                    return NotFound();
+                }
+                _db.Query("gastroitems").Where("Id", id).Delete();
+                return NoContent();
+            }
+            catch (Exception e)
             {
                 throw;
             }
+
         }
 
-        return NoContent();
+
     }
-    private bool GastroItemExists(long id)
-{
-    return _context.GastroItems.Any(e => e.Id == id);
 }
 
-    [HttpDelete]
-    public async Task<IActionResult> DeleteGastroItem([FromQuery] long? id, [FromQuery] string name)
-    {
-        IQueryable<GastroItem> query = _context.GastroItems;
-
-        if(id.HasValue){
-            query = query.Where(e => e.Id.Equals(id));
-        }
-
-        else if(!name.IsNullOrEmpty()){
-
-            query = query.Where(e => e.DescriptionName.Equals(name));
-
-        }
-
-        if ( !await query.AnyAsync())
-        {
-            return NotFound();
-        }
-    else{
-
-        GastroItem item = await query.FirstOrDefaultAsync();
-        _context.GastroItems.Remove(item);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
-    }}
-}
-}
