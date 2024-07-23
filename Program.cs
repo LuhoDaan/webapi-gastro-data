@@ -7,6 +7,8 @@ using SqlKata.Compilers;
 using SqlKata.Execution;
 using System.Data.SqlClient;
 using Npgsql;
+using GastroApi.Controllers;
+using GastroApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +51,11 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = keycloakConfig["Authority"]
     };
 });
+
+//Add also DbContext to handle jsonb files
+// var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// builder.Services.AddDbContext<DbGastro>(options =>
+//     options.UseNpgsql(connectionString));
 
 // Add SQLKata QueryFactory
 builder.Services.AddSingleton<QueryFactory>(provider =>

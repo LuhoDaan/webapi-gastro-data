@@ -9,7 +9,9 @@ using SqlKata.Execution;
 using SqlKata;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.AspNetCore.Http.HttpResults;
-
+using System.Text.Json;
+using GastroApi.Models;
+using Newtonsoft.Json;
 
 namespace GastroApi.Controllers
 {
@@ -19,9 +21,12 @@ namespace GastroApi.Controllers
     {
         private readonly QueryFactory _db;
 
-        public GastroItemsController(QueryFactory db)
+        //private readonly DbGastro _context;
+
+        public GastroItemsController(QueryFactory db)//, DbGastro context)
         {
             _db = db;
+           // _context = context;
         }
 
         // GET: api/GastroItems
@@ -29,7 +34,7 @@ namespace GastroApi.Controllers
 
         public async Task<ActionResult<IEnumerable<GastroItem>>> GetGastroItems([FromQuery] long? id, [FromQuery] string? name, [FromQuery] string? description)
         {
-            var query = new Query("GastroItems");
+            var query = new Query("gastroitems");
 
             if (id.HasValue)
             {
@@ -58,23 +63,24 @@ namespace GastroApi.Controllers
             }
         }
 
-        // POST: api/GastroItems
+        // POST: api/gastroitems
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<GastroItem>> PostGastroItem(long id, string name, string ingredients, string recipe, int time)
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<GastroItem>> PostGastroItem(long id,  [FromBody] AdditionalItem? itemino)
         {
+            //var jsondata = additionalItem != null ? JsonConvert.SerializeObject(additionalItem): null;
+
             GastroItem item = new GastroItem
             {
                 Id = id,
-                DescriptionName = name,
-                Ingredients = ingredients,
-                Recipe = recipe,
-                TimeToPrepare = time
+                Data = new JsonRaw(itemino)
+
             };
 
+            // _context.gastroitems.Add(item);
+            // await _context.SaveChangesAsync();
 
-            var query = await _db.Query("GastroItems").InsertAsync(item);
-
+            var result = await _db.Query("gastroitems").InsertAsync(item);
 
             return CreatedAtAction(nameof(GetGastroItems), new { id = item.Id }, item);
         }
@@ -83,21 +89,15 @@ namespace GastroApi.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<GastroItem>> PutGastroItem(long id, [FromQuery] string? name, [FromQuery] string? ingredients, [FromQuery] string? recipe, [FromQuery] int? time)
+        public async Task<ActionResult<GastroItem>> PutGastroItem(long id, [FromBody] AdditionalItem? itemino)
         {
-            GastroItem item = new GastroItem
-            {
-                DescriptionName = name,
-                Ingredients = ingredients,
-                Recipe = recipe,
-                TimeToPrepare = time
-            };
 
-            Dictionary<string, object> MapItem = NotNullItems(item);
+
+            Dictionary<string, object> MapItem = NotNullItems(itemino);
 
             try
             {
-                var affectedRows = await _db.Query("GastroItems").Where("Id", id).UpdateAsync(MapItem);
+                var affectedRows = await _db.Query("gastroitems").Where("Id", id).UpdateAsync(MapItem);
 
                 if (affectedRows == 0)
                 {
@@ -106,7 +106,7 @@ namespace GastroApi.Controllers
 
 
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
 
                 throw;
@@ -117,25 +117,26 @@ namespace GastroApi.Controllers
 
         }
 
-        private Dictionary<string, object> NotNullItems(GastroItem gastroItem)
+        private Dictionary<string, object> NotNullItems(AdditionalItem? itemino)
         {
 
             Dictionary<string, object> map = new Dictionary<string, object>();
 
-            if (!string.IsNullOrEmpty(gastroItem.DescriptionName)) map["DescriptionName"] = gastroItem.DescriptionName;
-            if (!string.IsNullOrEmpty(gastroItem.Ingredients)) map["Ingredients"] = gastroItem.Ingredients;
-            if (!string.IsNullOrEmpty(gastroItem.Recipe)) map["Recipe"] = gastroItem.Recipe;
-            if (gastroItem.TimeToPrepare.HasValue) map["TimeToPrepare"] = gastroItem.TimeToPrepare;
+            if (!string.IsNullOrEmpty(itemino.DescriptionName)) map["DescriptionName"] = itemino.DescriptionName;
+            if (!string.IsNullOrEmpty(itemino.Ingredients)) map["Ingredients"] = itemino.Ingredients;
+            if (!string.IsNullOrEmpty(itemino.Recipe)) map["Recipe"] = itemino.Recipe;
+            if (itemino.TimeToPrepare.HasValue) map["TimeToPrepare"] = itemino.TimeToPrepare;
 
 
             return map;
 
         }
 
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGastroItem(long id)
         {
-            var query = new Query("GastroItems").Where("Id", id);
+            var query = new Query("gastroitems").Where("Id", id);
 
             try
             {
@@ -145,7 +146,7 @@ namespace GastroApi.Controllers
                 {
                     return NotFound();
                 }
-                _db.Query("GastroItems").Where("Id", id).Delete();
+                _db.Query("gastroitems").Where("Id", id).Delete();
                 return NoContent();
             }
             catch (Exception e)

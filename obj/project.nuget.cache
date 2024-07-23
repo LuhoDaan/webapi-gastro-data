@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "hueGacf+LyUe6wq1lUIftdqlAbt9DS8HdUSme0aEKDEzJ1XTWh2QQNsIeGnL4Ok7E9zKfofvP+PbEzzNtGA0Yw==",
+  "dgSpecHash": "8K9pWA3pX5UsXugSs+qpTJB/wU4ZVxU7bsHiz+SadGt1t/9WiQysUEP/GVXGSHoRW5lFwJS2rDWa6rH4H0lzlw==",
   "success": true,
   "projectFilePath": "/home/luho/Code/webapi/GastroApi/GastroApi.csproj",
   "expectedPackageFiles": [
     "/home/luho/.nuget/packages/azure.core/1.35.0/azure.core.1.35.0.nupkg.sha512",
     "/home/luho/.nuget/packages/azure.identity/1.10.3/azure.identity.1.10.3.nupkg.sha512",
-    "/home/luho/.nuget/packages/dapper/2.0.123/dapper.2.0.123.nupkg.sha512",
+    "/home/luho/.nuget/packages/dapper/2.1.35/dapper.2.1.35.nupkg.sha512",
     "/home/luho/.nuget/packages/humanizer/2.14.1/humanizer.2.14.1.nupkg.sha512",
     "/home/luho/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/luho/.nuget/packages/humanizer.core.af/2.14.1/humanizer.core.af.2.14.1.nupkg.sha512",
