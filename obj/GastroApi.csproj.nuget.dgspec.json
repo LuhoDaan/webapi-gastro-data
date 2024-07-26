@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/luho/Code/webapi/GastroApi/GastroApi.csproj": {}
+    "/home/luho/Code/GastroApi/GastroApi.csproj": {}
   },
   "projects": {
-    "/home/luho/Code/webapi/GastroApi/GastroApi.csproj": {
+    "/home/luho/Code/GastroApi/GastroApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/luho/Code/webapi/GastroApi/GastroApi.csproj",
+        "projectUniqueName": "/home/luho/Code/GastroApi/GastroApi.csproj",
         "projectName": "GastroApi",
-        "projectPath": "/home/luho/Code/webapi/GastroApi/GastroApi.csproj",
+        "projectPath": "/home/luho/Code/GastroApi/GastroApi.csproj",
         "packagesPath": "/home/luho/.nuget/packages/",
-        "outputPath": "/home/luho/Code/webapi/GastroApi/obj/",
+        "outputPath": "/home/luho/Code/GastroApi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/luho/.nuget/NuGet/NuGet.Config"
@@ -38,6 +38,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "IdentityModel": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -68,7 +76,7 @@
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.4.0, )"
+              "version": "[6.6.2, )"
             }
           },
           "imports": [

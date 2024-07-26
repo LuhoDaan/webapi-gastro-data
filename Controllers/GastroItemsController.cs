@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using GastroApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 //using Microsoft.EntityFrameworkCore;
 
 namespace GastroApi.Controllers
@@ -49,6 +51,7 @@ namespace GastroApi.Controllers
 
         // POST: api/GastroItems
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<GastroItem>> PostGastroItem(GastroItem GastroItem)
         {
             _context.GastroItems.Add(GastroItem);
