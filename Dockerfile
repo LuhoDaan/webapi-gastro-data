@@ -13,11 +13,6 @@ RUN dotnet restore
 COPY . .
 WORKDIR /src/GastroApi
 RUN dotnet build GastroApi.csproj -c Release -o /app
-# Copy the rest of the application and build it
-# COPY . ./
-# RUN chmod -R 777 /app  # Set permissions
-# RUN dotnet build -c Release -o out
-#RUN dotnet publish GastroApi.csproj -c Release -o /app/publish
 # Use the official .NET runtime image to run the application
 FROM build AS publish
 RUN dotnet publish GastroApi.csproj -c Release -o /app/publish

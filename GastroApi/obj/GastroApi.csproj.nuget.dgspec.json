@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/luho/dockerdotnet/GastroApi/GastroApi.csproj": {}
+    "/home/luho/Code/GastroApi/GastroApi/GastroApi.csproj": {}
   },
   "projects": {
-    "/home/luho/dockerdotnet/GastroApi/GastroApi.csproj": {
+    "/home/luho/Code/GastroApi/GastroApi/GastroApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/luho/dockerdotnet/GastroApi/GastroApi.csproj",
+        "projectUniqueName": "/home/luho/Code/GastroApi/GastroApi/GastroApi.csproj",
         "projectName": "GastroApi",
-        "projectPath": "/home/luho/dockerdotnet/GastroApi/GastroApi.csproj",
+        "projectPath": "/home/luho/Code/GastroApi/GastroApi/GastroApi.csproj",
         "packagesPath": "/home/luho/.nuget/packages/",
-        "outputPath": "/home/luho/dockerdotnet/GastroApi/obj/",
+        "outputPath": "/home/luho/Code/GastroApi/GastroApi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/luho/.nuget/NuGet/NuGet.Config"
@@ -41,6 +41,10 @@
             "Dapper": {
               "target": "Package",
               "version": "[2.1.35, )"
+            },
+            "Elastic.Clients.Elasticsearch": {
+              "target": "Package",
+              "version": "[8.9.3, )"
             },
             "IdentityModel": {
               "target": "Package",
@@ -118,7 +122,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/8.0.104/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/8.0.105/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

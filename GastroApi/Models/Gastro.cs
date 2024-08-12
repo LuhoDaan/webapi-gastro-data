@@ -18,7 +18,7 @@ namespace GastroApi
     {
         public long id { get; set; }
 
-        public JsonRaw? Data { get; set; } //public string? Data { get; set; }
+        public JsonRaw? data { get; set; } //public string? Data { get; set; }
     }
 
 
@@ -39,6 +39,11 @@ namespace GastroApi
 
         public int? TimeToPrepare { get; set; }
     } 
+    public class GastroItemCreateModel
+{
+    public long Id { get; set; }
+    public AdditionalItem? Itemino { get; set; }
+}
     public class JsonRawConverter : JsonConverter<JsonRaw>
     {
         public override void WriteJson(JsonWriter writer, JsonRaw? value, JsonSerializer serializer)
@@ -92,3 +97,4 @@ namespace GastroApi
         }
     }
 }
+

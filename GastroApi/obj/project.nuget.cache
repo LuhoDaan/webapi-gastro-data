@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "bJWYs6qG+f5rMWowuyYjBKx196s26mHXxZUPaAcRMUL3pbvp1FEnux4ANjgpu00ue0LeMHAiAsTxjY+Erb5fkg==",
+  "dgSpecHash": "a3OGes1LnrDGRO+gq05Nf10n3qtpsH9f+9gxwRn+Lz8D1Vh/1qA+qTSJEDOKiHrMKuz7ZdjVn/S8l8kE/xM87A==",
   "success": true,
-  "projectFilePath": "/home/luho/dockerdotnet/GastroApi/GastroApi.csproj",
+  "projectFilePath": "/home/luho/Code/GastroApi/GastroApi/GastroApi.csproj",
   "expectedPackageFiles": [
     "/home/luho/.nuget/packages/azure.core/1.35.0/azure.core.1.35.0.nupkg.sha512",
     "/home/luho/.nuget/packages/azure.identity/1.10.3/azure.identity.1.10.3.nupkg.sha512",
     "/home/luho/.nuget/packages/dapper/2.1.35/dapper.2.1.35.nupkg.sha512",
+    "/home/luho/.nuget/packages/elastic.clients.elasticsearch/8.9.3/elastic.clients.elasticsearch.8.9.3.nupkg.sha512",
+    "/home/luho/.nuget/packages/elastic.transport/0.4.15/elastic.transport.0.4.15.nupkg.sha512",
     "/home/luho/.nuget/packages/humanizer/2.14.1/humanizer.2.14.1.nupkg.sha512",
     "/home/luho/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/luho/.nuget/packages/humanizer.core.af/2.14.1/humanizer.core.af.2.14.1.nupkg.sha512",

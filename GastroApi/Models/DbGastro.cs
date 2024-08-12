@@ -15,7 +15,7 @@ public class DbGastro : DbContext
         // .OwnsOne(item => item.Data, builder => {builder.ToJson();});
 
         modelBuilder.Entity<GastroItem>()
-        .Property(p=>p.Data)
+        .Property(p=>p.data)
         .HasColumnType("jsonb")
         .IsRequired();
     }
