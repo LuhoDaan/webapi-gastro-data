@@ -12,23 +12,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using static Dapper.SqlMapper;
-namespace GastroApi
+
+namespace GastroApi.Models
+
 {
-    public class GastroItem
-    {
-        public long id { get; set; }
 
-        public JsonRaw? data { get; set; } //public string? Data { get; set; }
-    }
-
-
-
-//BEFORE TRYNG THE BELOW CODE, SUBSTITUTE STRING WITH JSONRAW ON THE LAST FIELD (DATA)
-
-//     // SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
-// //
-// // SPDX-License-Identifier: AGPL-3.0-or-later
-    public class AdditionalItem
+ public class AdditionalItem
     {
 
         public string? DescriptionName { get; set; }
@@ -39,11 +28,7 @@ namespace GastroApi
 
         public int? TimeToPrepare { get; set; }
     } 
-    public class GastroItemCreateModel
-{
-    public long Id { get; set; }
-    public AdditionalItem? Itemino { get; set; }
-}
+
     public class JsonRawConverter : JsonConverter<JsonRaw>
     {
         public override void WriteJson(JsonWriter writer, JsonRaw? value, JsonSerializer serializer)
@@ -96,5 +81,8 @@ namespace GastroApi
             return obj.Select(x => new JsonRaw(x)).ToList();
         }
     }
-}
 
+
+
+
+}

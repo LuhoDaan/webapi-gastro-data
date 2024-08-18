@@ -32,8 +32,6 @@ builder.Services.AddCors(o =>
     });
 });
 
-
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -58,7 +56,7 @@ builder.Services.AddAuthentication(options =>
 //     options.UseNpgsql(connectionString));
 
 // Add SQLKata QueryFactory
-builder.Services.AddSingleton<QueryFactory>(provider =>
+builder.Services.AddSingleton<QueryFactory>( provider =>
 {
     var config = builder.Configuration;
     var connectionString = config.GetConnectionString("DefaultConnection");
@@ -67,6 +65,16 @@ builder.Services.AddSingleton<QueryFactory>(provider =>
 
     return new QueryFactory(connection, compiler);
 });
+
+// builder.Services.AddSingleton<ElasticsearchClient>(sp =>
+//         {
+//             var configuration = sp.GetRequiredService<IConfiguration>();
+//             var elasticsearchUrl = configuration["Elasticsearch:Url"];
+//             var settings = new ElasticsearchClientSettings(new Uri(elasticsearchUrl))
+//                 .DefaultIndex("gastroitems");
+
+//             return new ElasticsearchClient(settings);
+//         });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
