@@ -19,7 +19,7 @@ namespace GastroApi.Models
     {
         public long id { get; set; }
 
-        public JsonRaw? Data { get; set; } //public string? Data { get; set; }
+        public JsonRaw? data { get; set; } //public string? Data { get; set; }
     }
 
 }

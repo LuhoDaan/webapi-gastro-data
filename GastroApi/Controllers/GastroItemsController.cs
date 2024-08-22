@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using System.Text.Json;
 using GastroApi.Models;
 using Newtonsoft.Json;
+using GastroApi.Services;
 
 namespace GastroApi.Controllers
 {
@@ -32,32 +33,37 @@ namespace GastroApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GastroItem>>> GetGastroItems([FromQuery] long? id, [FromQuery] string? description, [FromQuery] string? recipe)
         {
+            
+            var query = new Query("gastroitems");
 
             if (id.HasValue)
             {
                 // Use PostgreSQL for id lookup
-                var query = new Query("gastroitems").Where("id", id);
+                query = query.Where("id", id);
                 var item = await _db.FirstOrDefaultAsync<GastroItem>(query);
                 return item == null ? NotFound() : Ok(new[] { item });
             }
             else if (!string.IsNullOrEmpty(description) && !string.IsNullOrEmpty(recipe))
             {
-                 var firstquery = new Query("gastroitems").WhereRaw("((data ->> 'DescriptionName') :: text ILIKE ? OR  (data ->> 'Recipe') :: text ILIKE ? )", $"%{description}%", $"%{recipe}%");
-                 var items = await _db.GetAsync(firstquery);
+                 var orSpec = new DescriptionOrRecipe(description,recipe);
+                 query = orSpec.ApplySpecification(query);
+                 var items = await _db.GetAsync(query);
                  return !items.Any() ? NotFound() : Ok(items);
             }
             else if (!string.IsNullOrEmpty(description) && string.IsNullOrEmpty(recipe))
             {
-                 var firstquery = new Query("gastroitems").WhereRaw("(data ->> 'DescriptionName') :: text ILIKE ? ", $"%{description}%");
-                 var items = await _db.GetAsync(firstquery);
+                 var descSpec = new DescriptionSpecification(description);   
+                 query = descSpec.ApplySpecification(query);
+                 var items = await _db.GetAsync(query);
                  return !items.Any() ? NotFound() : Ok(items);
             }
 
             else if (!string.IsNullOrEmpty(recipe) && string.IsNullOrEmpty(description))
             {
-                 var firstquery = new Query("gastroitems").WhereRaw("(data ->> 'Recipe') :: text ILIKE ? ", $"%{recipe}%");
-                 var items = await _db.GetAsync(firstquery);
-                 return !items.Any() ? NotFound() : Ok(items);
+                var recipeSpec = new RecipeSpecification(recipe);
+                query = recipeSpec.ApplySpecification(query);
+                var items = await _db.GetAsync(query);
+                return !items.Any() ? NotFound() : Ok(items);
             }
 
             else{
@@ -68,7 +74,20 @@ namespace GastroApi.Controllers
         }}
 
         // POST: api/gastroitems
+        [HttpPost]
+        
+        public async Task<ActionResult<GastroItem>> PostGastroItem(long id, [FromBody] AdditionalItem? itemino)
+        {
+            GastroItem item = new GastroItem
+            {
+                id = id,
+                data = new JsonRaw(itemino)
+            };
 
+            var result = await _db.Query("gastroitems").InsertAsync(item);
+
+            return CreatedAtAction(nameof(GetGastroItems),new { id =item.id}, item);
+        }
 
 
         [HttpPut("{id}")]
