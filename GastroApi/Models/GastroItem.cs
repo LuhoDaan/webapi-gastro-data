@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using static Dapper.SqlMapper;
+using GastroApi.Services;
 
 namespace GastroApi.Models
 {

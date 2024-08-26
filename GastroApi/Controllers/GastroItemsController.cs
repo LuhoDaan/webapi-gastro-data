@@ -20,7 +20,7 @@ namespace GastroApi.Controllers
     [ApiController]
     public class GastroItemsController : ControllerBase
     {
-        
+
         private readonly ILogger<GastroItemsController> _logger;
         private readonly QueryFactory _db;
 
@@ -36,7 +36,7 @@ namespace GastroApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GastroItem>>> GetGastroItems([FromQuery] long? id, [FromQuery] string? description, [FromQuery] string? recipe)
         {
-            
+
             var query = new Query("gastroitems");
 
             if (id.HasValue)
@@ -48,17 +48,17 @@ namespace GastroApi.Controllers
             }
             else if (!string.IsNullOrEmpty(description) && !string.IsNullOrEmpty(recipe))
             {
-                 var orSpec = new DescriptionOrRecipe(description,recipe);
-                 query = orSpec.ApplySpecification(query);
-                 var items = await _db.GetAsync(query);
-                 return !items.Any() ? NotFound() : Ok(items);
+                var orSpec = new DescriptionOrRecipe(description, recipe);
+                query = orSpec.ApplySpecification(query);
+                var items = await _db.GetAsync(query);
+                return !items.Any() ? NotFound() : Ok(items);
             }
             else if (!string.IsNullOrEmpty(description) && string.IsNullOrEmpty(recipe))
             {
-                 var descSpec = new DescriptionSpecification(description);   
-                 query = descSpec.ApplySpecification(query);
-                 var items = await _db.GetAsync(query);
-                 return !items.Any() ? NotFound() : Ok(items);
+                var descSpec = new DescriptionSpecification(description);
+                query = descSpec.ApplySpecification(query);
+                var items = await _db.GetAsync(query);
+                return !items.Any() ? NotFound() : Ok(items);
             }
 
             else if (!string.IsNullOrEmpty(recipe) && string.IsNullOrEmpty(description))
@@ -69,16 +69,18 @@ namespace GastroApi.Controllers
                 return !items.Any() ? NotFound() : Ok(items);
             }
 
-            else{
+            else
+            {
 
-            // If no parameters provided, return all items from PostgreSQL
-            var allItems = await _db.Query("gastroitems").GetAsync<GastroItem>();
-            return Ok(allItems);
-        }}
+                // If no parameters provided, return all items from PostgreSQL
+                var allItems = await _db.Query("gastroitems").GetAsync<GastroItem>();
+                return Ok(allItems);
+            }
+        }
 
         // POST: api/gastroitems
+       
         [HttpPost]
-        
         public async Task<ActionResult<GastroItem>> PostGastroItem(long id, [FromBody] AdditionalItem? itemino)
         {
             GastroItem item = new GastroItem
@@ -89,7 +91,7 @@ namespace GastroApi.Controllers
 
             var result = await _db.Query("gastroitems").InsertAsync(item);
 
-            return CreatedAtAction(nameof(GetGastroItems),new { id =item.id}, item);
+            return CreatedAtAction(nameof(GetGastroItems), new { id = item.id }, item);
         }
 
 
@@ -99,7 +101,7 @@ namespace GastroApi.Controllers
 
 
             Dictionary<string, object> MapItem = NotNullItems(itemino);
-            _logger.LogInformation("Updating fields: {Fields}", string.Join(", ",MapItem.Keys));
+            _logger.LogInformation("Updating fields: {Fields}", string.Join(", ", MapItem.Keys));
 
             try
             {
@@ -107,7 +109,7 @@ namespace GastroApi.Controllers
 
                 if (affectedRows == 0)
                 {
-                    _logger.LogInformation("Gastro Item with id={Id} was not found",id);
+                    _logger.LogInformation("Gastro Item with id={Id} was not found", id);
                     return NotFound();
                 }
 
@@ -152,7 +154,7 @@ namespace GastroApi.Controllers
                 {
                     return NotFound();
                 }
-                _logger.LogInformation("Succesfully deleted Gastro Item with id = {Id}",id);
+                _logger.LogInformation("Succesfully deleted Gastro Item with id = {Id}", id);
                 return NoContent();
             }
             catch (Exception e)
