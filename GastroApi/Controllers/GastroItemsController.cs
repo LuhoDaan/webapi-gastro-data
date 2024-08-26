@@ -20,13 +20,16 @@ namespace GastroApi.Controllers
     [ApiController]
     public class GastroItemsController : ControllerBase
     {
+        
+        private readonly ILogger<GastroItemsController> _logger;
         private readonly QueryFactory _db;
 
         //private readonly DbGastro _context;
 
-        public GastroItemsController(QueryFactory db)//, DbGastro context)
+        public GastroItemsController(QueryFactory db, ILogger<GastroItemsController> logger)//, DbGastro context)
         {
             _db = db;
+            _logger = logger;
         }
 
         // GET: api/GastroItems
@@ -96,6 +99,7 @@ namespace GastroApi.Controllers
 
 
             Dictionary<string, object> MapItem = NotNullItems(itemino);
+            _logger.LogInformation("Updating fields: {Fields}", string.Join(", ",MapItem.Keys));
 
             try
             {
@@ -103,6 +107,7 @@ namespace GastroApi.Controllers
 
                 if (affectedRows == 0)
                 {
+                    _logger.LogInformation("Gastro Item with id={Id} was not found",id);
                     return NotFound();
                 }
 
@@ -138,22 +143,21 @@ namespace GastroApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGastroItem(long id)
         {
-            var query = new Query("gastroitems").Where("id", id);
 
             try
             {
-                var catchItem = await _db.FirstOrDefaultAsync<GastroItem>(query);
+                var affectedRows = await _db.Query("gastroitems").Where("id", id).DeleteAsync();
 
-                if (catchItem is null)
+                if (affectedRows == 0)
                 {
                     return NotFound();
                 }
-                _db.Query("gastroitems").Where("id", id).Delete();
+                _logger.LogInformation("Succesfully deleted Gastro Item with id = {Id}",id);
                 return NoContent();
             }
             catch (Exception e)
             {
-                throw;
+                return StatusCode(500, "An error occured while processing your request");
             }
 
         }
