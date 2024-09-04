@@ -1,6 +1,6 @@
 services:
   api:
-    image: gastroapi
+    image: gastroapi:latest
     build:      
       context: .
       dockerfile: Dockerfile
