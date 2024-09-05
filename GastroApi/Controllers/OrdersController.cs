@@ -32,15 +32,15 @@ namespace GastroApi.Controllers
             _logger = logger;
         }
 
-                // GET: api/GastroItems
-                [HttpGet]
-                public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
-                {
-                        // If no parameters provided, return all items from PostgreSQL
-                        var allItems = await _db.Query("orders").GetAsync<Order>();
-                        return Ok(allItems);
-                    }
-                
+        // GET: api/GastroItems
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
+        {
+            // If no parameters provided, return all items from PostgreSQL
+            var allItems = await _db.Query("orders").GetAsync<Order>();
+            return Ok(allItems);
+        }
+
 
         //         // POST: api/gastroitems
 
@@ -163,45 +163,22 @@ namespace GastroApi.Controllers
 
         [HttpPost]
 
-        public async Task<ActionResult<Order>> PostOrder(long ext_id, [FromBody] OrderDto orderDto)
+        public async Task<ActionResult<Order>> PostOrder([FromBody] OrderDto orderDto) // does it make sense here that I removed the id from the parameters ?
         {
-
-            Order order = new Order
+            // Enum.TryParse(orderDto.OrderType, out OrderServingTypes result);
+            // OrderServingTypes
+            if (!Enum.IsDefined(typeof(OrderServingTypes), orderDto.OrderType))
             {
-                ExternalOrderId = orderDto.ExternalOrderId,
-                StartTime = DateTime.UtcNow, // set it to current time
-                EstimatedTime = orderDto.EstimatedTime, // this value later on should be set automatically depending on queues, RKA availability etc... 
-                OrderType = orderDto.OrderType,
-                PreOrderTime = orderDto.PreOrderTime,
-                OrderCategory = orderDto.OrderCategory,
-                Priority = orderDto.Priority,
-                Cost = orderDto.Cost,
-                //Dishes = orderDto.Dishes, 
+                return BadRequest($"Invalid OrderType: {orderDto.OrderType}");
+            }
 
-                // Set default values for properties not in OrderDto
-                //Uuid = 0, // This will be set by the database
-                CompletionTime = null,
-                MappedStatus = OrderStatus.Preparing // Assuming new orders start with 'Preparing' status
-            };
+                orderDto.StartTime = DateTime.UtcNow;
+                orderDto.CompletionTime = null;
+                orderDto.MappedStatus = OrderStatus.Preparing.ToString();
 
-            var orderForDb = new
-            {
-                order.ExternalOrderId,
-                order.StartTime,
-                order.EstimatedTime,
-                OrderType = order.OrderType, // Explicit conversion
-                order.PreOrderTime,
-                order.OrderCategory,
-                order.Priority,
-                order.Cost,
-                order.CompletionTime,
-                MappedStatus = order.MappedStatus.ToString() // Explicit conversion
-            };
+            var insertedId = await _db.Query("orders").InsertGetIdAsync<long>(orderDto); // I've found that if I substitute orderforDb with the poper order object i get a lastval error from the db when trying to insert the entry
 
-            var insertedId = await _db.Query("orders").InsertGetIdAsync<long>(orderForDb);
-            order.Uuid = insertedId;
-
-            return CreatedAtAction(nameof(GetOrders),new {id = insertedId}, order);
+            return CreatedAtAction(nameof(GetOrders), new { id = insertedId }, orderDto);
         }
 
 
