@@ -24,6 +24,23 @@ public class Dish
     //public string StateMessage { get; set; }
 }
 
+public class DishDto
+{
+    public long Uuid { get; set; }
+    public string MappedStatus { get; set; }
+    public bool Packed { get; set; }
+    public int TotalResources { get; set; }
+    public int Cost { get; set; }
+    public long MenuItemUuid { get; set; }
+    public DateTime ProductionStartTime { get; set; }
+    public DateTime ProductionEndTime { get; set; }
+    public string DishName { get; set; }
+    public bool IsPickedUp { get; set; }
+    public string ServingType { get; set; }
+    public long OrderUuid { get; set; }
+    
+}
+
 
 
 
