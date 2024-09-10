@@ -11,8 +11,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Text.Json;
 using GastroApi.Models;
-using Newtonsoft.Json;
 using GastroApi.Services;
+using Elastic.Clients.Elasticsearch.Aggregations;
+
 
 namespace GastroApi.Controllers
 {
@@ -34,10 +35,10 @@ namespace GastroApi.Controllers
 
         // GET: api/GastroItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<OrderDtoApi>>> GetOrders()
         {
             // If no parameters provided, return all items from PostgreSQL
-            var allItems = await _db.Query("orders").GetAsync<Order>();
+            var allItems = await _db.Query("orders").GetAsync();
             return Ok(allItems);
         }
 
@@ -163,24 +164,40 @@ namespace GastroApi.Controllers
 
         [HttpPost]
 
-        public async Task<ActionResult<Order>> PostOrder([FromBody] OrderDto orderDto) // does it make sense here that I removed the id from the parameters ?
+        public async Task<ActionResult<OrderDtoApi>> PostOrder([FromBody] OrderDtoApi orderDto) // does it make sense here that I removed the id from the parameters ?
         {
-            // Enum.TryParse(orderDto.OrderType, out OrderServingTypes result);
-            // OrderServingTypes
+
             if (!Enum.IsDefined(typeof(OrderServingTypes), orderDto.OrderType))
             {
                 return BadRequest($"Invalid OrderType: {orderDto.OrderType}");
             }
 
-                orderDto.StartTime = DateTime.UtcNow;
-                orderDto.CompletionTime = null;
-                orderDto.MappedStatus = OrderStatus.Preparing.ToString();
+            orderDto.StartTime = DateTime.UtcNow;
+            orderDto.CompletionTime = null;
+            orderDto.MappedStatus = OrderStatus.Preparing.ToString();
 
-            var insertedId = await _db.Query("orders").InsertGetIdAsync<long>(orderDto); // I've found that if I substitute orderforDb with the poper order object i get a lastval error from the db when trying to insert the entry
+            OrderDtoDb dborder = OrderMapper.MapOrderDtoApiToOrderDtoDb(orderDto);
+
+
+            var insertedId = await _db.Query("orders").InsertGetIdAsync<long>(dborder); 
 
             return CreatedAtAction(nameof(GetOrders), new { id = insertedId }, orderDto);
         }
 
+
+        // public async Task<ActionResult> DishesInsert(List<Dish> dishes)
+        // {
+        //     var result = await _db.Query("dishes").InsertAsync(dishes);
+
+        //     return Ok();
+
+
+        //     }
+
+
+
+
+        // }
 
         //             [HttpPut("{id}")]
         //             public async Task<ActionResult<GastroItem>> PutGastroItem(long id, [FromBody] AdditionalItem? itemino)
@@ -336,6 +353,8 @@ namespace GastroApi.Controllers
 
 
     }
+
 }
+
 
 

@@ -29,7 +29,7 @@ public class DishDto
     public long Uuid { get; set; }
     public string MappedStatus { get; set; }
     public bool Packed { get; set; }
-    public int TotalResources { get; set; }
+    //public int TotalResources { get; set; }
     public int Cost { get; set; }
     public long MenuItemUuid { get; set; }
     public DateTime ProductionStartTime { get; set; }
