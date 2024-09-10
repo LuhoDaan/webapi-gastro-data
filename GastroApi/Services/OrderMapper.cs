@@ -22,9 +22,9 @@ public static class OrderMapper
             OrderCategory = apiDto.OrderCategory,
             Priority = apiDto.Priority,
             Cost = apiDto.Cost,
-            Dishes = new JsonRaw(apiDto.Dishes?.Select(dish => dish.Uuid).ToList() ?? new List<long>())
+            dishesnew = "{" +string.Join(",",apiDto.dishesnew.Select(dish => dish.Uuid).ToArray()) + "}"
         };
-    }
 
+}
 }
 }

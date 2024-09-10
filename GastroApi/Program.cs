@@ -62,8 +62,9 @@ builder.Services.AddSingleton<QueryFactory>( provider =>
     var connectionString = config.GetConnectionString("DefaultConnection");
     var connection = new NpgsqlConnection(connectionString); // Or SqlConnection for SQL Server
     var compiler = new PostgresCompiler(); // Or new SqlServerCompiler() for SQL Server
-
-    return new QueryFactory(connection, compiler);
+    var db = new QueryFactory(connection,compiler);
+    db.Logger = compiled => { Console.WriteLine(compiled.ToString()); };
+    return db;
 });
 
 // builder.Services.AddSingleton<ElasticsearchClient>(sp =>
