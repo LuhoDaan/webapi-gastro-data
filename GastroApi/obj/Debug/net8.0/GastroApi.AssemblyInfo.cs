@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GastroApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff0e1af8fdd72b180990b4b384dcf4503f71bcbf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+58c13c40817964cc16e95e77ee8441d5d6d7bbd4")]
 [assembly: System.Reflection.AssemblyProductAttribute("GastroApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GastroApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
