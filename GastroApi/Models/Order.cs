@@ -52,7 +52,7 @@ public class OrderDtoDb
     public string OrderCategory { get; set; }
     public bool Priority { get; set; }
     public int Cost { get; set; }
-    public string dishesnew { get; set; } // better to use than list
+    public ICollection<int> dishesnew { get; set; } // better to use than list
 }
 
 

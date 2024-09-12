@@ -22,7 +22,7 @@ public static class OrderMapper
             OrderCategory = apiDto.OrderCategory,
             Priority = apiDto.Priority,
             Cost = apiDto.Cost,
-            dishesnew = "{" +string.Join(",",apiDto.dishesnew.Select(dish => dish.Uuid).ToArray()) + "}"
+            dishesnew = new [] {1, 2 } 
         };
 
 }

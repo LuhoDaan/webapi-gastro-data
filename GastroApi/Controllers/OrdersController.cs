@@ -13,6 +13,8 @@ using System.Text.Json;
 using GastroApi.Models;
 using GastroApi.Services;
 using Elastic.Clients.Elasticsearch.Aggregations;
+using Dapper;
+using System.Data;
 
 
 namespace GastroApi.Controllers
@@ -25,12 +27,15 @@ namespace GastroApi.Controllers
         private readonly ILogger<OrdersController> _logger;
         private readonly QueryFactory _db;
 
+        private readonly IDbConnection _dbConnection;
+
         //private readonly DbGastro _context;
 
-        public OrdersController(QueryFactory db, ILogger<OrdersController> logger)//, DbGastro context)
+        public OrdersController(QueryFactory db, ILogger<OrdersController> logger, IDbConnection dbConnection)//, DbGastro context)
         {
             _db = db;
             _logger = logger;
+            _dbConnection = dbConnection;
         }
 
         // GET: api/GastroItems
@@ -167,10 +172,10 @@ namespace GastroApi.Controllers
         public async Task<ActionResult<OrderDtoApi>> PostOrder([FromBody] OrderDtoApi orderDto) // does it make sense here that I removed the id from the parameters ?
         {
 
-            if (!Enum.IsDefined(typeof(OrderServingTypes), orderDto.OrderType))
-            {
-                return BadRequest($"Invalid OrderType: {orderDto.OrderType}");
-            }
+            // if (!Enum.IsDefined(typeof(OrderServingTypes), orderDto.OrderType))
+            // {
+            //     return BadRequest($"Invalid OrderType: {orderDto.OrderType}");
+            // }
 
             orderDto.StartTime = DateTime.UtcNow;
             orderDto.CompletionTime = null;
@@ -178,8 +183,36 @@ namespace GastroApi.Controllers
 
             OrderDtoDb dborder = OrderMapper.MapOrderDtoApiToOrderDtoDb(orderDto);
 
+const string sql = @"
+    INSERT INTO orders (
+        Uuid,
+        StartTime,
+        EstimatedTime,
+        CompletionTime,
+        MappedStatus,
+        OrderType,
+        PreOrderTime,
+        OrderCategory,
+        Priority,
+        Cost,
+        dishesnew
+    ) 
+    VALUES (
+        @Uuid,
+        @StartTime,
+        @EstimatedTime,
+        @CompletionTime,
+        @MappedStatus,
+        @OrderType,
+        @PreOrderTime,
+        @OrderCategory,
+        @Priority,
+        @Cost,
+        @Dishesnew
+    )
+    RETURNING id";
 
-            var insertedId = await _db.Query("orders").InsertGetIdAsync<long>(dborder); 
+        var insertedId = await _dbConnection.QuerySingleAsync<long>(sql, dborder);
 
             return CreatedAtAction(nameof(GetOrders), new { id = insertedId }, orderDto);
         }

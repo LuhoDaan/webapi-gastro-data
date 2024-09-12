@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using Npgsql;
 using GastroApi.Controllers;
 using GastroApi.Models;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,7 +55,13 @@ builder.Services.AddAuthentication(options =>
 // var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 // builder.Services.AddDbContext<DbGastro>(options =>
 //     options.UseNpgsql(connectionString));
-
+builder.Services.AddTransient<IDbConnection>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("DefaultConnection");
+    return new NpgsqlConnection(connectionString);
+}
+);
 // Add SQLKata QueryFactory
 builder.Services.AddSingleton<QueryFactory>( provider =>
 {
